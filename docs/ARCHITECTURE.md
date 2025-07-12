@@ -3,6 +3,9 @@
 ## Project Overview
 Equity Education Web App - An interactive learning platform for equity, investing, and startup compensation concepts.
 
+**Repository:** https://github.com/plusmasa/equity-education-app  
+**Live Demo:** Coming soon (Vercel deployment planned)
+
 ## Tech Stack
 - **Frontend**: React 19 with TypeScript
 - **Styling**: Tailwind CSS with Wealthfront-inspired design system
@@ -168,3 +171,4 @@ public/
 - **July 12, 2025**: Initial architecture established
 - **July 12, 2025**: Jargon sidepanel UX system designed
 - **July 12, 2025**: Wealthfront-inspired design system implemented
+- **July 12, 2025**: Repository created and pushed to GitHub: https://github.com/plusmasa/equity-education-app

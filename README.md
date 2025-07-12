@@ -1,46 +1,100 @@
-# Getting Started with Create React App
+# Equity Education App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An interactive web application for learning equity, investing, and startup compensation concepts through bite-sized lessons and engaging minigames.
 
-## Available Scripts
+## 🚀 Features
 
-In the project directory, you can run:
+- **Progressive Learning**: 5 stages from basic investing concepts to advanced equity compensation
+- **Interactive Lessons**: Markdown-based content with dynamic loading
+- **Jargon Sidepanel**: Clickable terms with explanations and lesson references
+- **Wealthfront-inspired Design**: Clean, professional UI with modern animations
+- **Debug Tools**: Development panel for monitoring app state and content loading
 
-### `npm start`
+## 🛠️ Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **Frontend**: React 19 with TypeScript
+- **Styling**: Tailwind CSS with custom design system
+- **Animations**: Framer Motion
+- **Routing**: React Router DOM v7
+- **Content**: Static markdown files
+- **State**: React hooks + localStorage
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 🏗️ Architecture
 
-### `npm test`
+The app follows a modular component architecture:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```
+src/
+├── components/     # Reusable UI components
+├── pages/         # Route components  
+├── types/         # TypeScript definitions
+└── docs/          # Architecture documentation
+```
 
-### `npm run build`
+## 🎯 Learning Stages
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. **Foundations of Investing** - Assets, risk/reward, public vs private companies
+2. **Startup Investing** - Lifecycle, shares, dilution, options, exits
+3. **Public Company Compensation** - RSUs, capital gains, advanced concepts
+4. **Real-World Scenarios** - Case studies and portfolio building
+5. **Review & Mastery** - Challenge mode and resources
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🚀 Getting Started
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+# Clone the repository
+git clone https://github.com/plusmasa/equity-education-app.git
+cd equity-education-app
 
-### `npm run eject`
+# Install dependencies
+npm install
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+# Start development server
+npm start
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+# Open http://localhost:3000
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 📱 Development
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- **Debug Panel**: Click the floating button (bottom-right) to inspect app state
+- **Content Updates**: Edit markdown files in `public/curriculum/` 
+- **Hot Reload**: Changes reflect immediately in development
 
-## Learn More
+## 🎨 Design System
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Inspired by Wealthfront's clean, professional aesthetic:
+- **Colors**: Blue primary palette with green accents
+- **Typography**: Inter font family
+- **Components**: Consistent spacing and soft shadows
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 📖 Documentation
+
+- [Architecture Overview](docs/ARCHITECTURE.md) - Detailed technical documentation
+- [Milestones](../Milestones.md) - Project progress tracking
+
+## 🧪 Testing
+
+```bash
+npm test
+```
+
+## 🚀 Deployment
+
+The app is configured for deployment on Vercel:
+
+```bash
+npm run build
+```
+
+## 📄 License
+
+This project is for educational purposes.
+
+## 🤝 Contributing
+
+This is an educational project. See [Milestones](../Milestones.md) for current development status.
+
+---
+
+Built with ❤️ for financial education
