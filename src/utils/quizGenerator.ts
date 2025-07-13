@@ -48,6 +48,22 @@ export class QuizBuilder {
     return this.addMultipleChoice(questionTemplate, correctText, wrongAnswers, explanation);
   }
 
+  // Add a calculation question with percentage formatting
+  addPercentageQuestion(
+    questionTemplate: string,
+    correctAnswer: number,
+    explanation: string,
+    wrongAnswerMultipliers: number[] = [0.7, 1.3, 0.5]
+  ): QuizBuilder {
+    const correctText = `${correctAnswer}%`;
+    const wrongAnswers = wrongAnswerMultipliers.map(multiplier => {
+      const wrongValue = Math.round(correctAnswer * multiplier * 10) / 10; // Round to 1 decimal
+      return `${wrongValue}%`;
+    });
+    
+    return this.addMultipleChoice(questionTemplate, correctText, wrongAnswers, explanation);
+  }
+
   // Add a "which is best" scenario question
   addScenarioQuestion(
     scenario: string,

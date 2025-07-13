@@ -175,12 +175,14 @@ export const generateDynamicQuiz = (lessonId: string): QuizQuestion[] => {
       const totalShares = getRandomFromArray([100, 200, 500, 1000]);
       const yourShares = getRandomFromArray([10, 20, 50, 100]);
       const newShares = getRandomFromArray([50, 100, 200, 500]);
+      const initialPercentage = Math.round((yourShares / totalShares) * 100 * 10) / 10;
       const finalTotalShares = totalShares + newShares;
       const newPercentage = Math.round((yourShares / finalTotalShares) * 100 * 10) / 10;
 
-      builder.addCalculationQuestion(
-        `You own ${yourShares} shares in a company with ${totalShares} total shares. The company issues ${newShares} new shares. What is your new ownership percentage?`,
-        newPercentage,
+      builder.addMultipleChoice(
+        `You own ${yourShares} shares in a company with ${totalShares} total shares, that's ${initialPercentage}% of the company. The company issues ${newShares} new shares. What is your new ownership percentage?`,
+        `${newPercentage}%`,
+        [`${Math.round(newPercentage * 0.7 * 10) / 10}%`, `${Math.round(newPercentage * 1.3 * 10) / 10}%`, `${Math.round(newPercentage * 0.5 * 10) / 10}%`],
         `With ${finalTotalShares} total shares after dilution, your ${yourShares} shares represent ${newPercentage}% ownership.`
       );
 
