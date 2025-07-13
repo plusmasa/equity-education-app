@@ -23,6 +23,24 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log the error for debugging
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // Try to clean up potentially corrupted localStorage
+    try {
+      const corruptedKeys = ['completedLessons'];
+      corruptedKeys.forEach(key => {
+        const value = localStorage.getItem(key);
+        if (value) {
+          try {
+            JSON.parse(value);
+          } catch {
+            console.warn(`Removing corrupted localStorage key: ${key}`);
+            localStorage.removeItem(key);
+          }
+        }
+      });
+    } catch (cleanupError) {
+      console.error('Error during localStorage cleanup:', cleanupError);
+    }
   }
 
   render() {
@@ -42,16 +60,31 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
             </p>
             <div className="space-y-3">
               <button
-                onClick={() => window.location.href = '/'}
+                onClick={() => {
+                  // Try to recover without full reload
+                  this.setState({ hasError: false, error: undefined });
+                  window.history.pushState({}, '', '/');
+                  window.dispatchEvent(new PopStateEvent('popstate'));
+                }}
                 className="w-full px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors"
+              >
+                Try to Recover
+              </button>
+              <button
+                onClick={() => window.location.href = '/'}
+                className="w-full px-4 py-2 bg-neutral-200 text-neutral-700 rounded-md hover:bg-neutral-300 transition-colors"
               >
                 Go to Dashboard
               </button>
               <button
-                onClick={() => window.location.reload()}
-                className="w-full px-4 py-2 bg-neutral-200 text-neutral-700 rounded-md hover:bg-neutral-300 transition-colors"
+                onClick={() => {
+                  // Clear all localStorage before reload as last resort
+                  localStorage.clear();
+                  window.location.reload();
+                }}
+                className="w-full px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
               >
-                Reload App
+                Reset Everything & Reload
               </button>
             </div>
             {this.state.error && (

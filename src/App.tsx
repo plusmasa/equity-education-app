@@ -4,6 +4,7 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import LessonPage from './pages/LessonPage';
 import DebugPanel from './components/DebugPanel';
+import RouterErrorBoundary from './components/RouterErrorBoundary';
 import { JargonTerm } from './types';
 
 // Loading component for Suspense fallback
@@ -53,9 +54,9 @@ function App() {
         <div className="App">
           <Suspense fallback={<LoadingSpinner />}>
             <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Dashboard />} />
-                <Route path="lesson/:lessonId" element={<LessonPage />} />
+              <Route path="/" element={<Layout />} errorElement={<RouterErrorBoundary />}>
+                <Route index element={<Dashboard />} errorElement={<RouterErrorBoundary />} />
+                <Route path="lesson/:lessonId" element={<LessonPage />} errorElement={<RouterErrorBoundary />} />
                 <Route path="*" element={<Dashboard />} /> {/* Catch-all route */}
               </Route>
             </Routes>

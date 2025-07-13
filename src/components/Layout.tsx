@@ -8,16 +8,34 @@ const Layout: React.FC = () => {
       // Clear localStorage
       localStorage.removeItem('completedLessons');
       
+      // Show immediate feedback
+      const button = document.querySelector('[title="Reset lesson progress (QA only)"]') as HTMLButtonElement;
+      if (button) {
+        button.textContent = '✅ Reset!';
+        button.disabled = true;
+      }
+      
       // Dispatch custom event to update components immediately
       window.dispatchEvent(new CustomEvent('lessonCompleted'));
       
-      // Navigate to home instead of reloading to avoid potential crash
-      window.location.href = '/';
+      // Use a safer approach - just redirect without reload
+      setTimeout(() => {
+        // Use pushState to navigate without full page reload
+        window.history.pushState({}, '', '/');
+        window.dispatchEvent(new PopStateEvent('popstate'));
+        
+        // Re-enable button after navigation
+        setTimeout(() => {
+          if (button) {
+            button.textContent = '🔄 Reset Progress';
+            button.disabled = false;
+          }
+        }, 1000);
+      }, 500);
       
     } catch (error) {
       console.error('Error resetting progress:', error);
-      // Fallback: try a simple reload
-      window.location.reload();
+      alert('Reset failed. Please try refreshing the page manually.');
     }
   };
 
