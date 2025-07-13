@@ -6,13 +6,18 @@ interface JargonSidepanelProps {
   isOpen?: boolean;
   onClose?: () => void;
   term?: JargonTerm;
+  currentLessonId?: string;
 }
 
 const JargonSidepanel: React.FC<JargonSidepanelProps> = ({ 
   isOpen = false, 
   onClose = () => {}, 
-  term 
+  term,
+  currentLessonId 
 }) => {
+  // Determine if we should show the "learn more" section
+  const shouldShowLearnMore = term?.learnMoreLesson && 
+                             term.learnMoreLesson !== currentLessonId;
   return (
     <AnimatePresence>
       {isOpen && term && (
@@ -57,8 +62,8 @@ const JargonSidepanel: React.FC<JargonSidepanelProps> = ({
                 </p>
               </div>
               
-              {/* Learn More */}
-              {term.learnMoreLessonTitle && (
+              {/* Learn More - only show if term is covered in a different lesson */}
+              {shouldShowLearnMore && (
                 <div className="bg-primary-50 rounded-lg p-4 border border-primary-200">
                   <div className="flex items-start space-x-3">
                     <div className="flex-shrink-0">
