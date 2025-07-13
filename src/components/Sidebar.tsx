@@ -71,8 +71,9 @@ const Sidebar: React.FC = () => {
     return new Set(visited);
   };
 
-  // Add current lesson to visited lessons
-  const updateVisitedLessons = () => {
+
+  // Update visited lessons when location changes
+  useEffect(() => {
     const currentLessonId = location.pathname.replace('/lesson/', '');
     if (currentLessonId && lessonOrder.includes(currentLessonId)) {
       const visited = JSON.parse(localStorage.getItem('visitedLessons') || '[]');
@@ -81,11 +82,6 @@ const Sidebar: React.FC = () => {
         localStorage.setItem('visitedLessons', JSON.stringify(visited));
       }
     }
-  };
-
-  // Update visited lessons when location changes
-  React.useEffect(() => {
-    updateVisitedLessons();
   }, [location.pathname]);
 
   // Determine which lessons are unlocked (allow browsing to visited lessons)
