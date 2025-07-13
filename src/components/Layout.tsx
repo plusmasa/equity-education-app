@@ -40,7 +40,7 @@ const Layout: React.FC = () => {
         <main className="flex-1 lg:pl-64">
           <Outlet />
         </main>
-        <JargonSidepanel />
+        {/* Remove problematic standalone JargonSidepanel - it's handled per page */}
       </div>
     </div>
   );
