@@ -65,10 +65,35 @@ const Sidebar: React.FC = () => {
     'stage3-section3'
   ];
 
-  // Determine which lessons are unlocked
+  // Track which lessons user has visited (for browsing)
+  const getVisitedLessons = () => {
+    const visited = JSON.parse(localStorage.getItem('visitedLessons') || '[]');
+    return new Set(visited);
+  };
+
+  // Add current lesson to visited lessons
+  const updateVisitedLessons = () => {
+    const currentLessonId = location.pathname.replace('/lesson/', '');
+    if (currentLessonId && lessonOrder.includes(currentLessonId)) {
+      const visited = JSON.parse(localStorage.getItem('visitedLessons') || '[]');
+      if (!visited.includes(currentLessonId)) {
+        visited.push(currentLessonId);
+        localStorage.setItem('visitedLessons', JSON.stringify(visited));
+      }
+    }
+  };
+
+  // Update visited lessons when location changes
+  React.useEffect(() => {
+    updateVisitedLessons();
+  }, [location.pathname]);
+
+  // Determine which lessons are unlocked (allow browsing to visited lessons)
   const getUnlockedLessons = () => {
     const unlocked = new Set(['stage1-section1']); // First lesson is always available
+    const visited = getVisitedLessons();
     
+    // Unlock based on completion (traditional progression)
     for (let i = 0; i < lessonOrder.length - 1; i++) {
       const currentLesson = lessonOrder[i];
       const nextLesson = lessonOrder[i + 1];
@@ -76,9 +101,12 @@ const Sidebar: React.FC = () => {
       if (completedLessons.includes(currentLesson)) {
         unlocked.add(nextLesson);
       } else {
-        break; // Stop unlocking if current lesson not completed
+        break;
       }
     }
+    
+    // Also unlock any lesson the user has visited (allow browsing)
+    visited.forEach(lesson => unlocked.add(lesson));
     
     return unlocked;
   };
@@ -96,6 +124,8 @@ const Sidebar: React.FC = () => {
   };
 
   const currentLesson = getCurrentLesson();
+  
+  // Clean navigation state tracking
 
   // Debug function to reset progress (can be called from browser console)
   useEffect(() => {
@@ -213,6 +243,8 @@ const Sidebar: React.FC = () => {
                     const isCompleted = completedLessons.includes(section.lessonId);
                     const isNext = currentLesson === section.lessonId; // Next lesson to complete
                     const isActive = location.pathname === section.path; // Currently viewing
+                    
+                    // Navigation state logic
 
                     if (isUnlocked) {
                       return (
@@ -230,15 +262,15 @@ const Sidebar: React.FC = () => {
                           </span>
                           <div className="flex items-center space-x-1">
                             {isActive && (
-                              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                              <div className="w-4 h-4 bg-blue-500 rounded-full border-2 border-blue-200" title="You are here"></div>
                             )}
-                            {isNext && !isActive && (
-                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            )}
-                            {isCompleted && !isActive && !isNext && (
-                              <span className="text-xs text-green-600 font-normal">
+                            {isCompleted && !isActive && (
+                              <span className="text-sm text-green-600 font-semibold" title="Completed">
                                 ✓
                               </span>
+                            )}
+                            {isNext && !isActive && !isCompleted && (
+                              <div className="w-2 h-2 bg-amber-400 rounded-full" title="Recommended next"></div>
                             )}
                           </div>
                         </Link>

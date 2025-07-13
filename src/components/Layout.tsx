@@ -7,6 +7,7 @@ const Layout: React.FC = () => {
     try {
       // Clear localStorage
       localStorage.removeItem('completedLessons');
+      localStorage.removeItem('visitedLessons');
       
       // Show immediate feedback
       const button = document.querySelector('[title="Reset lesson progress (QA only)"]') as HTMLButtonElement;
