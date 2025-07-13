@@ -92,8 +92,30 @@ export const generateDynamicQuiz = (lessonId: string): QuizQuestion[] => {
       break;
 
     case 'stage1-section2-public':
-      // Company type question
-      builder.addCompanyTypeQuestion(QuizData.companies);
+      // Company type question - ensure only one correct answer
+      const allCompanies = QuizData.companies;
+      const publicCompanies = allCompanies.filter(c => c.type === 'public');
+      const privateCompanies = allCompanies.filter(c => c.type === 'private');
+      
+      // Randomly choose to ask about either public or private
+      const askAboutType = getRandomFromArray(['public', 'private']);
+      const correctCompanies = askAboutType === 'public' ? publicCompanies : privateCompanies;
+      const wrongCompanies = askAboutType === 'public' ? privateCompanies : publicCompanies;
+      
+      // Pick one correct answer and mix in wrong answers
+      const correctCompany = getRandomFromArray(correctCompanies);
+      const wrongAnswers = wrongCompanies.map(c => c.name);
+      
+      builder.addMultipleChoice(
+        `Which of these companies is ${askAboutType}?`,
+        correctCompany.name,
+        wrongAnswers,
+        `${correctCompany.name} is a ${askAboutType} company. ${
+          askAboutType === 'public' 
+            ? 'You can buy shares on stock exchanges like NYSE or NASDAQ.' 
+            : 'Shares are not available to the general public and trade privately.'
+        }`
+      );
 
       // Liquidity scenario question
       const scenario = getRandomFromArray(QuizData.liquidityScenarios);

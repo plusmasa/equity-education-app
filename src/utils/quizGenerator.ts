@@ -126,9 +126,13 @@ export const QuizData = {
 
   companies: [
     { name: 'Apple', type: 'public' },
-    { name: 'SpaceX', type: 'private' },
     { name: 'Microsoft', type: 'public' },
-    { name: 'Stripe', type: 'private' }
+    { name: 'Google', type: 'public' },
+    { name: 'Amazon', type: 'public' },
+    { name: 'SpaceX', type: 'private' },
+    { name: 'Stripe', type: 'private' },
+    { name: 'Discord', type: 'private' },
+    { name: 'Canva', type: 'private' }
   ],
 
   liquidityScenarios: [
