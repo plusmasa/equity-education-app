@@ -211,8 +211,8 @@ const Sidebar: React.FC = () => {
                   {stage.sections.map((section) => {
                     const isUnlocked = unlockedLessons.has(section.lessonId);
                     const isCompleted = completedLessons.includes(section.lessonId);
-                    const isCurrent = currentLesson === section.lessonId;
-                    const isActive = location.pathname === section.path;
+                    const isNext = currentLesson === section.lessonId; // Next lesson to complete
+                    const isActive = location.pathname === section.path; // Currently viewing
 
                     if (isUnlocked) {
                       return (
@@ -229,10 +229,13 @@ const Sidebar: React.FC = () => {
                             {section.id} {section.title}
                           </span>
                           <div className="flex items-center space-x-1">
-                            {isCurrent && (
+                            {isActive && (
+                              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            )}
+                            {isNext && !isActive && (
                               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                             )}
-                            {isCompleted && !isCurrent && (
+                            {isCompleted && !isActive && !isNext && (
                               <span className="text-xs text-green-600 font-normal">
                                 ✓
                               </span>
