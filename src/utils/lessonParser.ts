@@ -294,6 +294,106 @@ Every time new shares are issued in a funding round, existing investors own a sm
           type: 'quiz'
         }
       ];
+
+    case 'stage2-section2':
+      return [
+        {
+          id: 'overview',
+          title: 'Overview',
+          content: `# Shares & Dilution
+
+Understanding how shares work and what dilution means is crucial for anyone involved with startups. This lesson will help you understand ownership, fundraising, and how your stake changes over time.`,
+          type: 'content'
+        },
+        {
+          id: 'what-are-shares',
+          title: 'What Are Shares?',
+          content: `## What Are Shares?
+
+Shares represent ownership in a company. If you own shares, you own part of the company.
+
+**Example:**
+If a company has 100 shares and you own 10, you own 10% of the company.
+
+## Basic Ownership Principles
+
+- **Shares = Ownership:** Each share represents a fractional ownership of the company
+- **Percentage Calculation:** Your percentage = (Your shares ÷ Total shares) × 100
+- **Value Fluctuation:** Share value changes as the company's total value changes`,
+          type: 'content'
+        },
+        {
+          id: 'what-is-dilution',
+          title: 'What Is Dilution?',
+          content: `## What Is Dilution?
+
+Dilution happens when a company issues more shares. Each owner's percentage of the company gets smaller, but the company may become more valuable overall.
+
+**What does "issuing more shares" mean?**
+- When a company wants to raise money, it creates new shares and sells them to new investors
+- These new shares did not exist before; the company "authorizes" them, increasing the total number of shares
+- The decision to issue more shares is made by the company's board of directors and approved by existing shareholders
+- The number of new shares is based on how much money the company wants to raise and the price investors are willing to pay
+
+**Detailed Example:**
+Suppose you own 20 shares in a company with 100 total shares (20%).
+- The company raises money and issues 100 new shares to investors. Now there are 200 shares total.
+- You still own 20 shares, but now you own 10% of the company (20/200).`,
+          type: 'content'
+        },
+        {
+          id: 'dilution-impact',
+          title: 'Why Dilution Happens & Its Impact',
+          content: `## Why Does Dilution Happen?
+
+- When a company raises money, it often issues new shares to new investors
+- Existing shareholders own a smaller percentage, but the company uses the new money to grow
+
+## Does Dilution Always Hurt You?
+
+Not necessarily! If the company uses the new money to grow and becomes much more valuable, your smaller percentage can be worth much more.
+
+**Example:**
+You own 10% of a company worth $100,000 ($10,000). After a funding round, you own 5% of a company worth $1,000,000 ($50,000). Your percentage shrank, but your shares are worth more.
+
+## What About Multiple Rounds?
+
+- Each time the company raises money, more shares are issued and your percentage shrinks further
+- If you don't invest in new rounds, you get diluted more
+- Sometimes, early investors can buy more shares to keep their percentage ("pro rata rights")`,
+          type: 'content'
+        },
+        {
+          id: 'common-vs-preferred',
+          title: 'Common vs. Preferred Stock',
+          content: `## Common Stock vs. Preferred Stock
+
+### Common Stock
+- Represents basic ownership in the company
+- Typically issued to founders and early employees (often via restricted stock or stock options)
+- Common stockholders usually have voting rights on company matters
+- Last in line for liquidation payouts—receive proceeds only after creditors and preferred stockholders are paid
+- Higher risk, but potential for significant upside if the company grows
+
+### Preferred Stock
+- Issued to investors (VCs, angels, private equity) during funding rounds
+- Comes with preferential rights and protections, including liquidation preference
+- May have special voting privileges, conversion rights, and redemption/buyback provisions
+- Lower risk due to higher liquidation priority, but may have less upside than common stock
+
+### Practical Implications for Employees
+- Employees usually receive common stock via options; investors get preferred stock
+- In a liquidity event, preferred stockholders are paid first
+- Understanding your stock type helps you assess risk and potential reward`,
+          type: 'content'
+        },
+        {
+          id: 'quiz',
+          title: 'Knowledge Check',
+          content: '',
+          type: 'quiz'
+        }
+      ];
       
     default:
       // For lessons not yet implemented, show coming soon message

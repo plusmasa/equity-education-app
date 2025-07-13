@@ -170,6 +170,53 @@ export const generateDynamicQuiz = (lessonId: string): QuizQuestion[] => {
       );
       break;
 
+    case 'stage2-section2':
+      // Dilution percentage calculation
+      const totalShares = getRandomFromArray([100, 200, 500, 1000]);
+      const yourShares = getRandomFromArray([10, 20, 50, 100]);
+      const newShares = getRandomFromArray([50, 100, 200, 500]);
+      const finalTotalShares = totalShares + newShares;
+      const newPercentage = Math.round((yourShares / finalTotalShares) * 100 * 10) / 10;
+
+      builder.addCalculationQuestion(
+        `You own ${yourShares} shares in a company with ${totalShares} total shares. The company issues ${newShares} new shares. What is your new ownership percentage?`,
+        newPercentage,
+        `With ${finalTotalShares} total shares after dilution, your ${yourShares} shares represent ${newPercentage}% ownership.`
+      );
+
+      // Value comparison question
+      const initialValue = getRandomFromArray([100000, 500000, 1000000]);
+      const postRoundValue = getRandomFromArray([2, 3, 5, 10]);
+      const finalValue = initialValue * postRoundValue;
+      const initialPercent = getRandomFromArray([10, 15, 20]);
+      const dilutedPercent = initialPercent / 2; // Simplified dilution
+      const initialWorth = (initialPercent / 100) * initialValue;
+      const finalWorth = (dilutedPercent / 100) * finalValue;
+
+      builder.addMultipleChoice(
+        `You owned ${initialPercent}% of a company worth $${(initialValue/1000)}K. After dilution, you own ${dilutedPercent}% of a company worth $${(finalValue/1000)}K. How did the value of your stake change?`,
+        finalWorth > initialWorth ? "Your stake increased in value despite dilution" : "Your stake decreased in value due to dilution",
+        [
+          "Your stake stayed exactly the same",
+          "You lost all your ownership",
+          "The company became worthless"
+        ],
+        `Your initial stake: ${initialPercent}% × $${(initialValue/1000)}K = $${(initialWorth/1000)}K. After dilution: ${dilutedPercent}% × $${(finalValue/1000)}K = $${(finalWorth/1000)}K.`
+      );
+
+      // Stock type question
+      builder.addMultipleChoice(
+        "Who typically receives preferred stock in a startup?",
+        "Investors during funding rounds",
+        [
+          "Founders at company inception",
+          "Employees through stock options",
+          "Customers who use the product"
+        ],
+        "Investors receive preferred stock with special rights and liquidation preferences, while founders and employees typically get common stock."
+      );
+      break;
+
     default:
       // Generic dynamic question for any lesson - will expand these later
       const concepts = ['risk', 'return', 'diversification', 'liquidity'];
