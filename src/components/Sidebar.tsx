@@ -4,8 +4,9 @@ import { Link, useLocation } from 'react-router-dom';
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const [completedLessons, setCompletedLessons] = useState<string[]>([]);
+  const [visitedLessons, setVisitedLessons] = useState<string[]>([]);
 
-  // Load completed lessons from localStorage on mount and listen for changes
+  // Load both completed and visited lessons from localStorage
   useEffect(() => {
     const loadCompletedLessons = () => {
       try {
@@ -27,13 +28,35 @@ const Sidebar: React.FC = () => {
       }
     };
 
+    const loadVisitedLessons = () => {
+      try {
+        const rawData = localStorage.getItem('visitedLessons');
+        const visited = rawData ? JSON.parse(rawData) : [];
+        
+        if (Array.isArray(visited)) {
+          setVisitedLessons(visited);
+        } else {
+          setVisitedLessons([]);
+          localStorage.setItem('visitedLessons', '[]');
+        }
+      } catch (error) {
+        console.error('Error loading visited lessons:', error);
+        setVisitedLessons([]);
+        localStorage.setItem('visitedLessons', '[]');
+      }
+    };
+
     // Load initial state
     loadCompletedLessons();
+    loadVisitedLessons();
 
     // Listen for storage changes (when lessons are completed)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'completedLessons') {
         loadCompletedLessons();
+      }
+      if (e.key === 'visitedLessons') {
+        loadVisitedLessons();
       }
     };
 
@@ -42,6 +65,7 @@ const Sidebar: React.FC = () => {
     // Also listen for custom events (for same-tab updates)
     const handleCustomUpdate = () => {
       loadCompletedLessons();
+      loadVisitedLessons();
     };
     
     window.addEventListener('lessonCompleted', handleCustomUpdate);
@@ -65,29 +89,24 @@ const Sidebar: React.FC = () => {
     'stage3-section3'
   ];
 
-  // Track which lessons user has visited (for browsing)
-  const getVisitedLessons = () => {
-    const visited = JSON.parse(localStorage.getItem('visitedLessons') || '[]');
-    return new Set(visited);
-  };
-
-
   // Update visited lessons when location changes
   useEffect(() => {
     const currentLessonId = location.pathname.replace('/lesson/', '');
     if (currentLessonId && lessonOrder.includes(currentLessonId)) {
-      const visited = JSON.parse(localStorage.getItem('visitedLessons') || '[]');
-      if (!visited.includes(currentLessonId)) {
-        visited.push(currentLessonId);
-        localStorage.setItem('visitedLessons', JSON.stringify(visited));
+      if (!visitedLessons.includes(currentLessonId)) {
+        const newVisited = [...visitedLessons, currentLessonId];
+        setVisitedLessons(newVisited);
+        localStorage.setItem('visitedLessons', JSON.stringify(newVisited));
+        
+        // Dispatch custom event to update other components if needed
+        window.dispatchEvent(new CustomEvent('lessonVisited', { detail: currentLessonId }));
       }
     }
-  }, [location.pathname]);
+  }, [location.pathname, lessonOrder, visitedLessons]);
 
   // Determine which lessons are unlocked (allow browsing to visited lessons)
   const getUnlockedLessons = () => {
     const unlocked = new Set(['stage1-section1']); // First lesson is always available
-    const visited = getVisitedLessons();
     
     // Unlock based on completion (traditional progression)
     for (let i = 0; i < lessonOrder.length - 1; i++) {
@@ -102,7 +121,7 @@ const Sidebar: React.FC = () => {
     }
     
     // Also unlock any lesson the user has visited (allow browsing)
-    visited.forEach(lesson => unlocked.add(lesson));
+    visitedLessons.forEach(lesson => unlocked.add(lesson));
     
     return unlocked;
   };
@@ -127,7 +146,9 @@ const Sidebar: React.FC = () => {
   useEffect(() => {
     (window as any).resetLessonProgress = () => {
       localStorage.removeItem('completedLessons');
+      localStorage.removeItem('visitedLessons');
       setCompletedLessons([]);
+      setVisitedLessons([]);
       console.log('Lesson progress reset');
     };
   }, []);
