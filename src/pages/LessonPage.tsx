@@ -65,11 +65,11 @@ const LessonPage: React.FC<LessonPageProps> = () => {
   const [lessonSubsections, setLessonSubsections] = useState<LessonSubsection[]>([]);
   const [currentSubsectionIndex, setCurrentSubsectionIndex] = useState(0);
 
-  // Navigation helpers
-  const currentIndex = LESSON_SEQUENCE.indexOf(lessonId || '');
+  // Navigation helpers with safe defaults
+  const currentIndex = lessonId ? LESSON_SEQUENCE.indexOf(lessonId) : -1;
   const previousLesson = currentIndex > 0 ? LESSON_SEQUENCE[currentIndex - 1] : null;
-  const nextLesson = currentIndex < LESSON_SEQUENCE.length - 1 ? LESSON_SEQUENCE[currentIndex + 1] : null;
-  const lessonTitle = lessonId ? LESSON_TITLES[lessonId] : 'Unknown Lesson';
+  const nextLesson = currentIndex >= 0 && currentIndex < LESSON_SEQUENCE.length - 1 ? LESSON_SEQUENCE[currentIndex + 1] : null;
+  const lessonTitle = lessonId && LESSON_TITLES[lessonId] ? LESSON_TITLES[lessonId] : 'Loading...';
   
   // Subsection navigation helpers
   const currentSubsection = lessonSubsections[currentSubsectionIndex];
@@ -104,14 +104,23 @@ const LessonPage: React.FC<LessonPageProps> = () => {
 
   // Handle quiz completion
   const handleQuizComplete = (score: number) => {
-    // Store completion in localStorage
-    const completedLessons = JSON.parse(localStorage.getItem('completedLessons') || '[]');
-    if (!completedLessons.includes(lessonId)) {
-      completedLessons.push(lessonId);
-      localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
+    if (!lessonId) return;
+    
+    try {
+      // Store completion in localStorage
+      const rawData = localStorage.getItem('completedLessons');
+      const completedLessons = rawData ? JSON.parse(rawData) : [];
       
-      // Dispatch custom event to update sidebar
-      window.dispatchEvent(new CustomEvent('lessonCompleted'));
+      // Ensure it's an array and lessonId isn't already included
+      if (Array.isArray(completedLessons) && !completedLessons.includes(lessonId)) {
+        completedLessons.push(lessonId);
+        localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
+        
+        // Dispatch custom event to update sidebar
+        window.dispatchEvent(new CustomEvent('lessonCompleted'));
+      }
+    } catch (error) {
+      console.error('Error saving lesson completion:', error);
     }
   };
 
@@ -254,14 +263,22 @@ const LessonPage: React.FC<LessonPageProps> = () => {
 
   useEffect(() => {
     const loadLesson = async () => {
-      if (!lessonId) return;
+      if (!lessonId) {
+        setLoading(false);
+        return;
+      }
       
       setLoading(true);
+      setError(''); // Clear any previous errors
       setCurrentSubsectionIndex(0); // Reset to first subsection
       
       try {
-        // Load lesson structure
+        // Load lesson structure with error handling
         const subsections = getLessonStructure(lessonId);
+        if (!subsections || subsections.length === 0) {
+          throw new Error(`No lesson structure found for ${lessonId}`);
+        }
+        
         setLessonSubsections(subsections);
         
         // For lessons with predefined structure, we're done
@@ -278,10 +295,14 @@ const LessonPage: React.FC<LessonPageProps> = () => {
             const text = await response.text();
             setContent(text);
             // Could parse this into subsections if needed
+          } else {
+            console.warn(`Failed to load curriculum file: ${fileName}`);
           }
         }
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load lesson');
+        const errorMessage = err instanceof Error ? err.message : 'Failed to load lesson';
+        console.error('Lesson loading error:', errorMessage);
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -289,6 +310,26 @@ const LessonPage: React.FC<LessonPageProps> = () => {
 
     loadLesson();
   }, [lessonId]);
+
+  // Redirect to home if no lessonId
+  if (!lessonId) {
+    return (
+      <div className="p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+            <h2 className="text-lg font-semibold text-yellow-900 mb-2">Invalid Lesson</h2>
+            <p className="text-yellow-700 mb-4">No lesson ID provided. Redirecting to dashboard...</p>
+            <button
+              onClick={() => navigate('/')}
+              className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600 transition-colors"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

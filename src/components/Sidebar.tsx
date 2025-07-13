@@ -8,8 +8,23 @@ const Sidebar: React.FC = () => {
   // Load completed lessons from localStorage on mount and listen for changes
   useEffect(() => {
     const loadCompletedLessons = () => {
-      const completed = JSON.parse(localStorage.getItem('completedLessons') || '[]');
-      setCompletedLessons(completed);
+      try {
+        const rawData = localStorage.getItem('completedLessons');
+        const completed = rawData ? JSON.parse(rawData) : [];
+        
+        // Ensure it's an array
+        if (Array.isArray(completed)) {
+          setCompletedLessons(completed);
+        } else {
+          console.warn('Invalid completedLessons data, resetting to empty array');
+          setCompletedLessons([]);
+          localStorage.setItem('completedLessons', '[]');
+        }
+      } catch (error) {
+        console.error('Error loading completed lessons:', error);
+        setCompletedLessons([]);
+        localStorage.setItem('completedLessons', '[]');
+      }
     };
 
     // Load initial state

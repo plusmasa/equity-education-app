@@ -5,12 +5,21 @@ import JargonSidepanel from './JargonSidepanel';
 
 const Layout: React.FC = () => {
   const handleResetProgress = () => {
-    localStorage.removeItem('completedLessons');
-    alert('Progress reset! Page will refresh.');
-    // Small delay to ensure alert is shown before reload
-    setTimeout(() => {
+    try {
+      // Clear localStorage
+      localStorage.removeItem('completedLessons');
+      
+      // Dispatch custom event to update components immediately
+      window.dispatchEvent(new CustomEvent('lessonCompleted'));
+      
+      // Navigate to home instead of reloading to avoid potential crash
+      window.location.href = '/';
+      
+    } catch (error) {
+      console.error('Error resetting progress:', error);
+      // Fallback: try a simple reload
       window.location.reload();
-    }, 100);
+    }
   };
 
   return (
